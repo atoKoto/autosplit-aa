@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:background="#121212">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AutoSplit Controller"
+        android:textColor="#FFFFFF"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
+        android:id="@+id/inputSearch"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:background="#1E1E1E"
+        android:hint="Type YouTube search or paste URL..."
+        android:textColorHint="#777777"
+        android:textColor="#FFFFFF"
+        android:padding="12dp"
+        android:imeOptions="actionSearch"
+        android:inputType="textUri|text" />
+
+    <Button
+        android:id="@+id/btnSend"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#00E5FF"
+        android:textColor="#000000"
+        android:text="Send to Car Screen" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display Modes (Tap to Switch)"
+        android:textColor="#00E5FF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btnMode1"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#242424"
+        android:textColor="#FFFFFF"
+        android:text="Mode 1: Fullscreen YouTube" />
+
+    <Button
+        android:id="@+id/btnMode2"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="#242424"
+        android:textColor="#FFFFFF"
+        android:text="Mode 2: Waze Big (70%) / YT (30%)" />
+
+    <Button
+        android:id="@+id/btnMode3"
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#242424"
+        android:textColor="#FFFFFF"
+        android:text="Mode 3: YT Big (65%) / Waze (35%)" />
+</LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/carRootContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <LinearLayout
+        android:id="@+id/splitHorizontalContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <!-- Waze Panel -->
+        <WebView
+            android:id="@+id/wazeWebView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.35" />
+
+        <View
+            android:id="@+id/dividerLine"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="#222222" />
+
+        <!-- YouTube Panel -->
+        <WebView
+            android:id="@+id/youtubeWebView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.65" />
+    </LinearLayout>
+
+    <!-- Mazda Virtual Rotary Pointer -->
+    <ImageView
+        android:id="@+id/virtualPointer"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:src="@android:drawable/ic_menu_compass"
+        android:tint="#00E5FF"
+        android:visibility="invisible" />
+</FrameLayout>
