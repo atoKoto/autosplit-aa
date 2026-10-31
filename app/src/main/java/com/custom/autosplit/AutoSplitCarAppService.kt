@@ -1,23 +1,21 @@
 package com.custom.autosplit
 
-import android.content.Context
-import android.hardware.display.DisplayManager
-import android.hardware.display.VirtualDisplay
-import androidx.car.app.AppManager
+import android.content.Intent
 import androidx.car.app.CarAppService
+import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.Session
-import androidx.car.app.SurfaceCallback
-import androidx.car.app.SurfaceContainer
 import androidx.car.app.model.Action
-import androidx.car.app.model.Pane
-import androidx.car.app.model.PaneTemplate
+import androidx.car.app.model.ActionStrip
+import androidx.car.app.model.ItemList
+import androidx.car.app.model.ListTemplate
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
+import androidx.car.app.validation.HostValidator
 
 class AutoSplitCarAppService : CarAppService() {
-    override fun createHostValidator(): androidx.car.app.validation.HostValidator {
-        return androidx.car.app.validation.HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
+    override fun createHostValidator(): HostValidator {
+        return HostValidator.ALLOW_ALL_HOSTS_VALIDATOR
     }
 
     override fun onCreateSession(): Session {
@@ -26,49 +24,76 @@ class AutoSplitCarAppService : CarAppService() {
 }
 
 class AutoSplitSession : Session() {
-    private var virtualDisplay: VirtualDisplay? = null
-    private var carPresentation: CarPresentation? = null
-
-    override fun onCreateScreen(intent: android.content.Intent): Screen {
-        val surfaceCallback = object : SurfaceCallback {
-            override fun onSurfaceAvailable(surfaceContainer: SurfaceContainer) {
-                val surface = surfaceContainer.surface ?: return
-                val displayManager = carContext.getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
-
-                virtualDisplay = displayManager.createVirtualDisplay(
-                    "AutoSplitDisplay",
-                    surfaceContainer.width,
-                    surfaceContainer.height,
-                    surfaceContainer.dpi,
-                    surface,
-                    DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION
-                )
-
-                virtualDisplay?.display?.let { disp ->
-                    carPresentation = CarPresentation(carContext, disp)
-                    carPresentation?.show()
-                }
-            }
-
-            override fun onSurfaceDestroyed(surfaceContainer: SurfaceContainer) {
-                carPresentation?.dismiss()
-                carPresentation = null
-                virtualDisplay?.release()
-                virtualDisplay = null
-            }
-        }
-
-        carContext.getCarService(AppManager::class.java).setSurfaceCallback(surfaceCallback)
-        return DummyScreen(carContext)
+    override fun onCreateScreen(intent: Intent): Screen {
+        return AutoSplitDashboardScreen(carContext)
     }
 }
 
-class DummyScreen(carContext: androidx.car.app.CarContext) : Screen(carContext) {
+class AutoSplitDashboardScreen(carContext: CarContext) : Screen(carContext) {
+
+    private var leftMode = "Google Maps"
+    private var rightMode = "Media Player"
+
     override fun onGetTemplate(): Template {
-        return PaneTemplate.Builder(
-            Pane.Builder()
-                .addRow(Row.Builder().setTitle("AutoSplit Active").build())
+        val listBuilder = ItemList.Builder()
+
+        // 1. Left Screen Option
+        listBuilder.addItem(
+            Row.Builder()
+                .setTitle("Left Screen: $leftMode")
+                .addText("Tap to cycle input (Maps / Waze / Off)")
+                .setOnClickListener {
+                    leftMode = when (leftMode) {
+                        "Google Maps" -> "Waze"
+                        "Waze" -> "Off"
+                        else -> "Google Maps"
+                    }
+                    invalidate()
+                }
                 .build()
-        ).setHeaderAction(Action.APP_ICON).build()
+        )
+
+        // 2. Right Screen Option
+        listBuilder.addItem(
+            Row.Builder()
+                .setTitle("Right Screen: $rightMode")
+                .addText("Tap to cycle input (Media / Web / Off)")
+                .setOnClickListener {
+                    rightMode = when (rightMode) {
+                        "Media Player" -> "Web View"
+                        "Web View" -> "Off"
+                        else -> "Media Player"
+                    }
+                    invalidate()
+                }
+                .build()
+        )
+
+        // 3. Launch Action
+        listBuilder.addItem(
+            Row.Builder()
+                .setTitle("Start Split View")
+                .addText("Current preset: $leftMode + $rightMode")
+                .setOnClickListener {
+                    // Logic to start the split view
+                }
+                .build()
+        )
+
+        val actionStrip = ActionStrip.Builder()
+            .addAction(
+                Action.Builder()
+                    .setTitle("Settings")
+                    .setOnClickListener { }
+                    .build()
+            )
+            .build()
+
+        return ListTemplate.Builder()
+            .setTitle("AutoSplit Dashboard")
+            .setHeaderAction(Action.APP_ICON)
+            .setActionStrip(actionStrip)
+            .setSingleList(listBuilder.build())
+            .build()
     }
 }
